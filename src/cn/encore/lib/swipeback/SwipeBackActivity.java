@@ -9,12 +9,12 @@ public class SwipeBackActivity extends FragmentActivity implements SwipeBackActi
 	/**
 	 * 是否初始化swipeBack控件
 	 */
-	private boolean mIsInnitSwipeBack = true;
+	private boolean mIsEnableSwipeBack = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (mIsInnitSwipeBack) {
+		if (mIsEnableSwipeBack) {
 			mHelper = new SwipeBackActivityHelper(this);
 			mHelper.onActivityCreate();
 		}
@@ -26,9 +26,12 @@ public class SwipeBackActivity extends FragmentActivity implements SwipeBackActi
 		if(mHelper != null)
 			mHelper.onPostCreate();
 	}
-	
-	public void setIsInnitSwipeBack(boolean mIsInnitSwipeBack) {
-		this.mIsInnitSwipeBack = mIsInnitSwipeBack;
+	/**
+	 * 设置是否
+	 * @param mIsInnitSwipeBack
+	 */
+	public void setIsSwipeBackEnable(boolean mIsEnableSwipeBack) {
+		this.mIsEnableSwipeBack = mIsEnableSwipeBack;
 	}
 
 	@Override
