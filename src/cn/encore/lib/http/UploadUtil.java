@@ -1,11 +1,11 @@
 package cn.encore.lib.http;
 
 import java.io.BufferedInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -86,9 +86,13 @@ public class UploadUtil {
 			
 			try 
 			{
+				
+				String BOUNDARY = "*****"; // 边界标识 随机生成
+				
 				Map<String, String> httpHead = new HashMap<String, String>();
-				httpHead.put("Content-Type", "application/octet-stream");
-				result = UploadUtil.uploadFile(url, filePath, httpHead, getParams);
+//				httpHead.put("Content-Type", "application/octet-stream");
+				httpHead.put("Content-Type","multipart/form-data;boundary=" + BOUNDARY);
+				result = UploadUtil.uploadFile(url, filePath, httpHead, getParams,BOUNDARY);
 			} catch (HttpConnectionResultException e) {
 				//Http Result不为200
 				result = e.getMessage();
@@ -123,10 +127,10 @@ public class UploadUtil {
 	}
 	
 	public static String uploadFile(String url, String filePath, 
-			Map<String, String> httpHead, Map<String, String> getParamMap) throws IOException {
+			Map<String, String> httpHead, Map<String, String> getParamMap,String BOUNDARY) throws IOException {
 		
 		HttpURLConnection conn = null;
-		OutputStream out = null;
+		DataOutputStream out = null;
 		BufferedInputStream fileInputStream = null;
 		String rsp = null;
 		
@@ -138,8 +142,20 @@ public class UploadUtil {
 			conn = WebUtils.getConnection(new URL(url), WebUtils.METHOD_POST, httpHead, CONNECTION_TIMEOUT);	
 			
 			conn.setDoOutput(true);
-			out = conn.getOutputStream();
+//			out = conn.getOutputStream();
+			out = new DataOutputStream(conn.getOutputStream());
 			if (out != null) {
+				
+				
+				String end = "\r\n";
+				String twoHyphens = "--";
+				
+				
+				out.writeBytes(twoHyphens + BOUNDARY + end);
+				String name = filePath.substring(filePath.lastIndexOf("/"));
+				out.writeBytes("Content-Disposition: form-data; " + "name=\"" + "headPic" + "\";filename=\"" + name + "\"" + end);
+				out.writeBytes(end);
+				
 				File file = new File(filePath);
 				FileInputStream inputStream = new FileInputStream(file);
 				fileInputStream = new BufferedInputStream(inputStream);
@@ -148,6 +164,9 @@ public class UploadUtil {
 				while((readLen = fileInputStream.read(buffer, 0, buffer.length)) != -1){
 					out.write(buffer);
 				}
+				out.writeBytes(end);  
+				out.writeBytes(twoHyphens + BOUNDARY + twoHyphens + end);  
+	            
 				fileInputStream.close();
 				fileInputStream = null;
 			}

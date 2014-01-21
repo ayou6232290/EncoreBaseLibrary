@@ -34,7 +34,7 @@ public class WebUtils {
 	
 	public static final String METHOD_GET = "GET";
 	
-	private static final int CONNECTION_TIMEOUT = 15*1000;
+	private static final int CONNECTION_TIMEOUT = 20*1000;
 	
 	public static String doPost(String url, Map<String, String> postParams, 
 			Map<String, String> getParams, Map<String, String> httpHead) throws IOException {
@@ -134,7 +134,7 @@ public class WebUtils {
 		HttpURLConnection conn = null;
 		OutputStream out = null;
 		String rsp = null;
-		
+		int responseCode = 0;
 		try 
 		{
 			conn = getConnection(new URL(url), method, httpHead, timeOut);	
@@ -147,7 +147,7 @@ public class WebUtils {
 				}
 			}
 			
-			int responseCode = conn.getResponseCode();
+			responseCode = conn.getResponseCode();
 			
 			Log.i(TAG, "connection - responseCode: " + responseCode);
 			
@@ -162,8 +162,12 @@ public class WebUtils {
 			}
 			
 		}catch(IOException e){
-			Log.e(TAG, "connection - IOException:" + e.getLocalizedMessage());
-			throw e;
+			Log.e(TAG, "connection - IOException:" + e.getLocalizedMessage() + " responseCode:" + responseCode);
+			if(responseCode == 401){
+				throw new HttpConnectionResultException(401);
+			}else {
+				throw new HttpConnectionResultException(500);
+			}
 		}
 		finally {
 			if (out != null) {
