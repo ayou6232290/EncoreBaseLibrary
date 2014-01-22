@@ -11,10 +11,6 @@ public interface OnRequestCallback {
 	 */
 	public void onSuccess(Object result);
 	/**
-	 * 请求超市
-	 */
-	public void onTimeOut();
-	/**
 	 * 请求失败
 	 * @param msg
 	 * @param state
