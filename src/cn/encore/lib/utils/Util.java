@@ -1,8 +1,11 @@
 package cn.encore.lib.utils;
 
+import java.io.File;
 import java.util.Random;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.os.Environment;
 import android.util.TypedValue;
 
 public class Util {
@@ -51,5 +54,26 @@ public class Util {
 		Random random = new Random();
 		int s = random.nextInt(max) % (max - min + 1) + min;
 		return s;
+	}
+	
+	public static String getNetCache(Context context) {
+		String root = getRootCache(context);
+		if (root == null) {
+			return null;
+		}
+		File rootFile = new File(root);
+		if (rootFile.isDirectory() || rootFile.mkdirs()) {
+			return root;
+		}
+		return null;
+	}
+
+	private static String getRootCache(Context context) {
+		String rootDir = null;
+		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+			// SD-card available
+			rootDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + context.getPackageName();
+		}
+		return rootDir;
 	}
 }
