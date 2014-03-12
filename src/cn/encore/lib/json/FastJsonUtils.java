@@ -11,14 +11,14 @@ import com.alibaba.fastjson.JSON;
  * @version V1.0
  * @description
  */
-public class JacksonUtils {
+public class FastJsonUtils {
 
 	private static final String TAG = "JacksonUtils";
-	private static JacksonUtils mJacksonUtils;
+	private static FastJsonUtils mJacksonUtils;
 
 	// private ObjectMapper mObjectMapper;
 
-	public JacksonUtils() {
+	public FastJsonUtils() {
 		// mObjectMapper = new ObjectMapper();
 		// mObjectMapper.configure(org.codehaus.jackson.map.DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES,
 		// false);
@@ -28,10 +28,10 @@ public class JacksonUtils {
 		// false);
 	}
 
-	public static JacksonUtils shareJacksonUtils() {
+	public static FastJsonUtils shareJacksonUtils() {
 
 		if (mJacksonUtils == null) {
-			mJacksonUtils = new JacksonUtils();
+			mJacksonUtils = new FastJsonUtils();
 		}
 		return mJacksonUtils;
 	}

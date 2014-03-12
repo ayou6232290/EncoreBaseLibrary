@@ -39,9 +39,9 @@ public class JsonParser implements IDataParser{
 	@Override
 	public Object parseData(String data) {
 		if(isList){
-			return JacksonUtils.shareJacksonUtils().parseJson2List(data, parserClass);
+			return FastJsonUtils.shareJacksonUtils().parseJson2List(data, parserClass);
 		}else{
-			return JacksonUtils.shareJacksonUtils().parseJson2Obj(data, parserClass);	
+			return FastJsonUtils.shareJacksonUtils().parseJson2Obj(data, parserClass);	
 		}
 	}
 }
